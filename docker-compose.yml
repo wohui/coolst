@@ -1,0 +1,54 @@
+# version: '3'
+
+# services:
+#   master:
+#     image: locustio/locust
+#     ports:
+#      - "8089:8089"
+#     volumes:
+#       - ./:/mnt/locust
+#     command: -f /mnt/locust/locustfile.py --master -H http://master:8089
+  
+#   worker:
+#     image: locustio/locust
+#     volumes:
+#       - ./:/mnt/locust
+#     command: -f /mnt/locust/locustfile.py --worker --master-host master
+
+version: '3'
+
+services:
+  locust:
+    image: locustio/locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py
+
+  locust-metrics-exporter:
+
+    image: containersol/locust_exporter
+    ports:
+      - "9646:9646"
+    environment:
+      - LOCUST_EXPORTER_URI=http://locust:8089
+    depends_on:
+      - locust
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/lib/grafana
+    restart: unless-stopped
