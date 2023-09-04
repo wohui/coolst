@@ -37,6 +37,7 @@
 [http://localhost:3000/login](http://localhost:3000/login)
 
 ![image.png](assets/gra2.png)
+![img.png](assets/gra3/img.png)
 ### exporter指标
 [指标信息](https://github.com/ContainerSolutions/locust_exporter/blob/main/locust_exporter.md)
 ## 学习参考
